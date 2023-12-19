@@ -1,1 +1,4 @@
 venv/
+data/Datos-Csv/australian_users_items.csv
+data/Datos-Json/australian_users_items.json
+data/Datos-Normalizados/australian_users_items_normalizado.csv
