@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from collections import Counter
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
-import json
+
 
 ####################################################################################################################
 #Dataframe Original
@@ -108,10 +107,17 @@ def UsersRecommend_Funct(year):
 
     # Aplanamos la lista de 'recomended_item_id' y contamos las recomendaciones para cada ID
     id_list = [id for sublist in df_year['recomended_item_id'].tolist() for id in sublist]
-    recommend_count = Counter(id_list)
+    
+    # Usamos un diccionario en lugar de Counter para contar las recomendaciones
+    recommend_count = {}
+    for id in id_list:
+        if id in recommend_count:
+            recommend_count[id] += 1
+        else:
+            recommend_count[id] = 1
 
     # Obtenemos los tres juegos más recomendados
-    top_games = recommend_count.most_common(3)
+    top_games = sorted(recommend_count.items(), key=lambda item: item[1], reverse=True)[:3]
     
     # Creamos un diccionario con los nombres de los juegos
     game_names = {game_id: df_steam_games.loc[df_steam_games['id'] == game_id, 'app_name'].values[0] for game_id, _ in top_games}
@@ -120,13 +126,14 @@ def UsersRecommend_Funct(year):
     return [{"Puesto {}".format(i+1): game_names[id]} for i, (id, count) in enumerate(top_games)]
 
 
+
 ################################################ FUNCION 4 ################################################
 def UsersNotRecommend_Funct(year):
     """
     ---4---
     Devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado.
     """
-
+    
     global df_review, df_steam_games
 
     def extract_year(release_date):
@@ -145,16 +152,24 @@ def UsersNotRecommend_Funct(year):
 
     # Aplanamos la lista de 'recomended_item_id' y contamos las recomendaciones para cada ID
     id_list = [id for sublist in df_year['recomended_item_id'].tolist() for id in sublist]
-    recommend_count = Counter(id_list)
+    
+    # Usamos un diccionario en lugar de Counter para contar las recomendaciones
+    recommend_count = {}
+    for id in id_list:
+        if id in recommend_count:
+            recommend_count[id] += 1
+        else:
+            recommend_count[id] = 1
 
     # Obtenemos los tres juegos menos recomendados
-    top_games = recommend_count.most_common()[:-4:-1]
+    top_games = sorted(recommend_count.items(), key=lambda item: item[1])[:3]
     
     # Creamos un diccionario con los nombres de los juegos
     game_names = {game_id: df_steam_games.loc[df_steam_games['id'] == game_id, 'app_name'].values[0] for game_id, _ in top_games}
     
     # Devolvemos una lista de diccionarios con los puestos y los nombres de los juegos
     return [{"Puesto {}".format(i+1): game_names[id]} for i, (id, count) in enumerate(top_games)]
+
 
 
 ################################################ FUNCION 5 ################################################
