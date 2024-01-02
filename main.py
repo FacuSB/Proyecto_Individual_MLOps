@@ -48,7 +48,7 @@ def UsersNotRecommend(anio: int):
     except Exception as e:
         return {"Error":str(e)}
     
-@app.get('/Sentiment_Analysis/{anio}') 
+@app.get('/sentiment_analysis/{anio}') 
 def sentiment_analysis(anio: int):
     
     try:
