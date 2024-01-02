@@ -7,15 +7,12 @@ app = FastAPI()
 
 
 
-@app.get("/", response_class=HTMLResponse)
-
+@app.get("/")
 def index_html():
-    
-    with open("templates/index.html", "r", encoding="utf-8") as file:
-        html_content = file.read()
+    # Mensaje de bienvenida en formato texto
+    welcome_message = "API de Consultas de Steam"
 
-    return HTMLResponse(content=html_content)
-
+    return welcome_message
 @app.get('/PlayTimeGenre/{genero}')
 def PlayTimeGenre(genero:str):
     
